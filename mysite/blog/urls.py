@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^post/(?P<pk>\d+)/remove/$', views.post_remove, name='post_remove'),
     url(r'^api/$', views.PostList.as_view()),
     url(r'^api/(?P<pk>[0-9]+)/$', views.PostDetail.as_view()),
+    url(r'^post/(?P<pk>\d+)/edit/$', views.post_edit, name='post_edit'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
