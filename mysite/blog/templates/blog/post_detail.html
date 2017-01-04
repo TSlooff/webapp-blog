@@ -13,8 +13,8 @@
     <script>
     (function ($) { $(document).ready(function(){
 
-       // hide title first
-        $(".navbar-brand").hide();
+      // hide title first
+       $(".navbar-brand").hide();
 
          // fade in title if the user scrolled 100px
           $(function () {
@@ -81,5 +81,23 @@
   <a class="btn btn-default" href="{% url 'post_remove' pk=post.pk %}">delete this post</span></a>
   <a class="btn btn-default" href="{% url 'post_edit' pk=post.pk %}">Edit this post</a>
   {% endif %}
+
+  <hr>
+  <a class="btn btn-default" href="{% url 'add_comment_to_post' pk=post.pk %}">Add comment</a>
+
+  {% for comment in post.comments.all reversed %}
+      <div class="comment" id="comments">
+          <strong>{{ comment.author }}</strong>
+          <p>{{ comment.text|linebreaks }}</p>
+          <div class="date">
+              <span id="dateofcomment">{{ comment.created_date }}</span>
+              {% if user.is_staff %}
+                  <a class="btn btn-default" href="{% url 'comment_remove' pk=comment.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+              {% endif %}
+          </div>
+      </div>
+  {% empty %}
+      <p>No comments here yet :(</p>
+  {% endfor %}
 </body>
 </html>

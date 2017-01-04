@@ -7,7 +7,7 @@
             <h4> {{ post.author }} </h4>
             <p>{{ post.text|linebreaksbr|truncatewords_html:150 }}</p>
             <h6>
-              {{ post.published_date }}
+              {{ post.published_date }} <a href="{% url 'post_detail' pk=post.pk %}#comments" class="commentcount">Comments: {{ post.comments.count }}</a>
             </h6>
         </div>
     {% endfor %}
