@@ -2,9 +2,13 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post
 from django.utils import timezone
 from .forms import PostForm, UserForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.views.generic import View
-
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
+from rest_framework import generics
+from .serializers import PostSerializer
 # Create your views here.
 def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
@@ -14,13 +18,13 @@ def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'blog/post_detail.html', {'post': post})
 
+@login_required(login_url='login')
 def post_new(request):
     if request.method == "POST":
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
-            post.published_date = timezone.now()
             post.save()
             return redirect('post_detail', pk=post.pk)
     else:
@@ -46,3 +50,48 @@ def new_user(request):
     else:
         form = UserForm()
     return render(request, 'blog/new_user.html', {'form': form})
+
+@login_required(login_url='login')
+def user_details(request):
+    currentusername = request.user.get_username()
+    fullname = request.user.get_full_name()
+    email = request.user.email
+    lastlog = request.user.last_login
+    return render(request, 'blog/user_details.html', {'username': currentusername, 'fullname': fullname, 'email': email, 'lastlog': lastlog})
+
+def logout_view(request):
+    logout(request)
+    return redirect('post_list')
+
+def login_view(request):
+    form = AuthenticationForm(None, request.POST or None)
+    if form.is_valid():
+        login(request, form.get_user())
+        return redirect('post_list')
+
+    return render(request, 'blog/login.html', {'form': form})
+
+@login_required(login_url='login')
+def post_draft_list(request):
+    posts = Post.objects.filter(published_date__isnull=True).order_by('created_date')
+    return render(request, 'blog/post_draft_list.html', {'posts': posts})
+
+@login_required(login_url='login')
+def post_publish(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.publish()
+    return redirect('post_detail', pk=pk)
+
+@login_required(login_url='login')
+def post_remove(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.delete()
+    return redirect('post_list')
+
+class PostList(generics.ListCreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+class PostDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer

@@ -1,13 +1,84 @@
-{% extends 'blog/base.html' %}
+{% load staticfiles %}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sans-Serif Blogs</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Comfortaa|Open+Sans" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
+    <link rel="shortcut icon" href=""> <!--prevents an error -->
+    <script>
+    (function ($) { $(document).ready(function(){
 
-{% block content %}
-    <div class="post">
-        {% if post.published_date %}
-            <div class="date">
-                {{ post.published_date }}
-            </div>
-        {% endif %}
-        <h1>{{ post.title }}</h1>
-        <p>{{ post.text|linebreaksbr }}</p>
+       // hide title first
+        $(".navbar-brand").hide();
+
+         // fade in title if the user scrolled 100px
+          $(function () {
+              $(window).scroll(function () {
+                   if ($(this).scrollTop() > 100) {
+                         $('.navbar-brand').fadeIn();
+                   } else {
+                         $('.navbar-brand').fadeOut();
+                   }
+          });});});}(jQuery));
+    </script>
+</head>
+<body>
+  <nav class="navbar navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">Sans-Serif blogs</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav navbar-right">
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'logout' %}" title="log out of your account"><span class="glyphicon glyphicon-log-out"></span> log out</a></li>
+          <li><a href="{% url 'user_details' %}" title="see details of your account"> {{user.username}}</a></li>
+          <li><a href="{% url 'post_draft_list' %}" title="look at your drafts"><span class="glyphicon glyphicon-edit"></span> go to drafts</a></li>
+          <li><a href="{% url 'post_new' %}" title="make a post"><span class="glyphicon glyphicon-plus"></span> make a post</a></li>
+          {% else %}
+          <li><a href="{% url 'new_user' %}" title="create an account"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href="{% url 'login' %}" title="log into your account"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+          {% endif %}
+        </ul>
+      </div>
     </div>
-{% endblock %}
+  </nav>
+
+
+    <div class="jumbotron">
+        <h1><a href="/">Sans-Serif Blogs</a></h1>
+    </div>
+
+
+  <div class="jumbotron post-detail-headline">
+    <h1>{{ post.title }}</h1>
+    <p>by {{ post.author }}</p>
+  </div>
+
+  <div class ="content container post-detail-text">
+    <div class="post">
+      <p>{{ post.text|linebreaksbr }}</p>
+    </div>
+  </div>
+  {% if post.published_date %}
+  <div class="date">
+    {{ post.published_date }}
+  </div>
+  {% else %}
+  <a class="btn btn-default" href="{% url 'post_publish' pk=post.pk %}">Publish</a>
+  {% endif %}
+  {% if user.is_authenticated and user == post.author %}
+  <a class="btn btn-default" href="{% url 'post_remove' pk=post.pk %}">delete this post</span></a>
+  {% endif %}
+</body>
+</html>

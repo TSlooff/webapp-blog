@@ -1,10 +1,11 @@
-.page-header {
+.jumbotron {
     background-color: #00ff93;
-    margin-top: 0;
+    margin-top: 1em;
     padding: 20px 20px 20px 40px;
+    margin-bottom: 0px;
 }
 
-.page-header h1, .page-header h1 a, .page-header h1 a:visited, .page-header h1 a:active {
+.jumbotron h1, .jumbotron h1 a, .jumbotron h1 a:visited, .jumbotron h1 a:active {
     color: #ffffff;
     font-size: 36pt;
     text-decoration: none;
@@ -15,7 +16,7 @@
 }
 
 h1, h2, h3, h4 {
-    font-family: 'Lobster', cursive;
+    font-family: 'Comfortaa', bold, sans-serif;
 }
 
 .date {
@@ -43,4 +44,62 @@ h1, h2, h3, h4 {
 
 .post h1 a, .post h1 a:visited {
     color: #000000;
+}
+
+p {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.post-detail-headline{
+  background-color: rgb(255,255,255);
+}
+
+.post-detail-headline h1{
+  color: #3b00ff;
+  font-size: 5em;
+}
+
+.post-detail-headline p {
+  color: #6a5e87;
+  font-size: 1.4em;
+}
+
+.post-detail-text {
+  font-size: 1.3em;
+}
+
+.navbar {
+    background-color: #00ff93;
+    margin:0;
+}
+
+.icon-bar
+{
+    display:block;
+    width:22px;
+    height:2px;
+    border-radius:1px;
+    border:1px solid #000000;
+}
+
+.navbar-toggle
+{
+    position:relative;
+    float:right;
+    padding:9px 10px;
+    margin-top:8px;
+    margin-right:15px;
+    margin-bottom:8px;
+    background-color:transparent;
+    background-image:none;
+    border:1px solid #000000;
+    border-radius:4px
+}
+
+.navbar a {
+    color: #3b00ff;
+}
+
+.navbar-brand {
+  font-family: 'Comfortaa', bold, sans-serif;
 }
